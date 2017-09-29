@@ -84,7 +84,7 @@
         </controls:Resizer>
 
         <Button x:Name="submitButton"
-                Click="{x:Bind ViewModel.GotoDetailsPage}" Content="Nei"
+                Click="{x:Bind ViewModel.GotoDetailsPage}" Content="Submit"
                 RelativePanel.AlignBottomWith="parameterResizer"
                 RelativePanel.RightOf="parameterResizer" />
 
