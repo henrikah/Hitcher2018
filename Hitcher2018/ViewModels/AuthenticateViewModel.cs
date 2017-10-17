@@ -29,7 +29,7 @@ namespace Hitcher2018.ViewModels
             } catch(AuthenticationException e)
             {
                 Debug.WriteLine("Exception: " + e);
-            }
+            } 
         }
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
         {

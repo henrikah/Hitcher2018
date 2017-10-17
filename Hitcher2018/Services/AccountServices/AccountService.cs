@@ -6,15 +6,42 @@ using Models;
 using CustomExceptions;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using Windows.UI.Xaml;
+using System.ComponentModel;
 
 namespace Hitcher2018.Services.AccountServices
 {
-    public sealed class AccountService
+    public sealed class AccountService : INotifyPropertyChanged
     {
+        # region Object
+        private Visibility requireAuthentication = Visibility.Visible;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public Visibility RequireAuthentication
+        {
+            get
+            {
+                return requireAuthentication;
+            }
+            private set
+            {
+                requireAuthentication = value;
+                NotifyPropertyChanged("RequireAuthentication");
+            }
+        }
+        private void NotifyPropertyChanged(String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
+        #region Statics
+        public static AccountService Instance { get; set; } = new AccountService();
         public static string AccessToken { get; set; }
         public static string UserName { get; set; }
         public static DateTime TokenExirationDate { get; set; }
         public static string TokenType { get; set; }
+
         public static bool TokenHasExpired()
         {
             return (TokenExirationDate.CompareTo(DateTime.UtcNow) < 0);
@@ -43,10 +70,21 @@ namespace Hitcher2018.Services.AccountServices
                 UserName = response.userName;
                 TokenExirationDate = Convert.ToDateTime(response.expires);
                 TokenType = response.token_type;
+                Instance.RequireAuthentication = Visibility.Collapsed;
             } else
             {
                 throw new AuthenticationException(response.error_description);
             }
         }
-    } 
+        public static async void LogOutAsync()
+        {
+            await Api.QueryAsync<object>("Account/Logout", HTTP.POST);
+            AccessToken = null;
+            UserName = null;
+            TokenExirationDate = default(DateTime);
+            TokenType = null;
+            Instance.RequireAuthentication = Visibility.Visible;
+        }
+        #endregion
+    }
 }

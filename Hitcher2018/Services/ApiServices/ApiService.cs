@@ -1,6 +1,7 @@
 ﻿using Hitcher2018.Services.AccountServices;
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -56,17 +57,25 @@ namespace Hitcher2018.Services.ApiServices
         }
         private static async Task<T> ProsessAsync<T>(HttpResponseMessage clientResponse)
         {
-            var jsonString = await clientResponse.Content.ReadAsStringAsync();
-            try
+            if (clientResponse.Headers.WwwAuthenticate.ToString() == "Bearer")
             {
-                return JsonConvert.DeserializeObject<T>(jsonString);
-            }
-            catch (JsonSerializationException)
-            {
+                Debug.WriteLine("Ikke innlogget lenger");
                 return default(T);
-            } catch (Exception)
+            } else
             {
-                return default(T);
+                var jsonString = await clientResponse.Content.ReadAsStringAsync();
+                try
+                {
+                    return JsonConvert.DeserializeObject<T>(jsonString);
+                }
+                catch (JsonSerializationException)
+                {
+                    return default(T);
+                }
+                catch (Exception)
+                {
+                    return default(T);
+                }
             }
         }
     }

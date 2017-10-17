@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Template10.Services.NavigationService;
 using Windows.UI.Xaml.Navigation;
+using Hitcher2018.Views;
+using Windows.UI.Xaml;
 
 namespace Hitcher2018.ViewModels
 {

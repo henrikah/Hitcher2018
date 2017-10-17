@@ -8,6 +8,8 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Template10.Mvvm;
+using System.Diagnostics;
+using Hitcher2018.Services.AccountServices;
 
 namespace Hitcher2018.Views
 {
@@ -35,6 +37,14 @@ namespace Hitcher2018.Views
             HamburgerMenu.RefreshStyles(_settings.AppTheme, true);
             HamburgerMenu.IsFullScreen = _settings.IsFullScreen;
             HamburgerMenu.HamburgerButtonVisibility = _settings.ShowHamburgerButton ? Visibility.Visible : Visibility.Collapsed;
+        }
+        #region Login
+        public AccountService AuthenticationInstance { get; set; } = AccountService.Instance;
+        #endregion
+
+        private void HamburgerButtonInfo_Tapped(object sender, RoutedEventArgs e)
+        {
+            AccountService.LogOutAsync();
         }
     }
 }
